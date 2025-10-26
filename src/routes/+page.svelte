@@ -1,5 +1,5 @@
 <script>
-  import Counter from "../lib/Counter.svelte";
+  import Counter from "../lib/counter.svelte";
   // The default boilerplate might have code you can delete here.
 
   const albumUrl = "https://photos.app.goo.gl/rcAYZJJ43fanFhtP6";
