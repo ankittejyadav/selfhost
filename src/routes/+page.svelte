@@ -13,30 +13,30 @@
 
   <p>And here is a second, independent counter:</p>
   <Counter />
+
+  <h1>My schedule</h1>
+  <iframe
+    src="https://calendar.google.com/calendar/embed?src=ankittejyadav%40gmail.com&ctz=America%2FNew_York"
+    style="border: 0"
+    width="100%"
+    height="1000"
+    frameborder="0"
+    scrolling="no"
+    title="Schedule"
+  ></iframe>
+
+  <h1>My Photo Album</h1>
+
+  <iframe
+    src={albumUrl}
+    width="100%"
+    height="800"
+    style="border:0;"
+    allowfullscreen
+    title="Album"
+  ></iframe>
+
+  <style>
+    /* Keep the existing styles or add your own */
+  </style>
 </main>
-
-<h1>My schedule</h1>
-<iframe
-  src="https://calendar.google.com/calendar/embed?src=ankittejyadav%40gmail.com&ctz=America%2FNew_York"
-  style="border: 0"
-  width="100%"
-  height="1000"
-  frameborder="0"
-  scrolling="no"
-  title="Schedule"
-></iframe>
-
-<h1>My Photo Album</h1>
-
-<iframe
-  src={albumUrl}
-  width="100%"
-  height="800"
-  style="border:0;"
-  allowfullscreen
-  title="Album"
-></iframe>
-
-<style>
-  /* Keep the existing styles or add your own */
-</style>
