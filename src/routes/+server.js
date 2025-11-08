@@ -27,7 +27,34 @@ function saveDB(data) {
 }
 
 //runs the function only whena post request hits this url
-export async function POST({request}){
-    //get the data sent from tampermonkey
-    
+export async function POST({ request }) {
+  //get the data sent from tampermonkey
+  const newVideo = await request.json();
+
+  //read the current video list from json file
+  const db = getDB();
+
+  //check if video already exists in db
+  const exists = db.some((video) => video.url === newVideo.url);
+
+  //for new videos
+  if (!exists) {
+    //add the new video to db at start
+    db.unshift(newVideo);
+
+    //keep the list at 10 videos
+    const updateDb = db.slice(0, 10);
+
+    saveDB(updateDb);
+  }
+
+  //send a success message to tampermonkey
+  return new Response(JSON.stringify({ success: true }), {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*", //allow request from any origin important
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }

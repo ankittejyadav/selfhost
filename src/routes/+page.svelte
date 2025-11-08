@@ -1,5 +1,4 @@
 <script>
-  import Counter from "../lib/counter.svelte";
   import Clock from "../lib/clock.svelte";
   // The default boilerplate might have code you can delete here.
 
@@ -7,14 +6,6 @@
 </script>
 
 <main>
-  <!-- <h1>My First Svelte App</h1>
-  <p>This is my custom counter component:</p>
-
-  <Counter />
-
-  <p>And here is a second, independent counter:</p>
-  <Counter /> -->
-
   <div class="p-20">
     <h1>My schedule</h1>
     <Clock />
