@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import { writable } from "svelte/store";
+  // import { writable } from "svelte/store";
 
-  const time = writable("");
+  let time = "";
 
   function updateTime() {
     const now = new Date();
@@ -13,25 +13,23 @@
       second: "2-digit",
       hour12: true,
     };
-    time.set(new Intl.DateTimeFormat("en-US", options).format(now));
+    time = new Intl.DateTimeFormat("en-US", options).format(now);
   }
 
+  //when the page loads run this function
   onMount(() => {
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); //clear interval if i navigate to a different page to avoid memory leak
   });
 </script>
 
-<div class="clock">
-  <p>
-    ET Time: {$time}
+<div class="p-6 rounded-lg bg-gray-100 shadow-md">
+  <p class="text-sm text-gray-600">My Time</p>
+  <p class="text-4xl font-mono font-semibold text-gray-900">
+    {time}
   </p>
 </div>
 
 <style>
-  .clock {
-    font-family: monospace;
-    display: inline-block;
-  }
 </style>

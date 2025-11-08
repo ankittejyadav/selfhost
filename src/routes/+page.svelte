@@ -1,37 +1,24 @@
 <script>
   import Clock from "../lib/clock.svelte";
-  // The default boilerplate might have code you can delete here.
 
-  const albumUrl = "https://photos.app.goo.gl/rcAYZJJ43fanFhtP6";
+  const calendarUrl =
+    "https://calendar.google.com/calendar/embed?src=ankittejyadav%40gmail.com&ctz=America%2FNew_York";
 </script>
 
 <main>
-  <div class="p-20">
-    <h1>My schedule</h1>
-    <Clock />
+  <div class="max-w-7xl mx-auto p-8">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold">My schedule</h1>
+      <Clock />
+    </div>
+
     <iframe
-      src="https://calendar.google.com/calendar/embed?src=ankittejyadav%40gmail.com&ctz=America%2FNew_York"
-      style="border: 0"
-      width="100%"
-      height="1000"
-      frameborder="0"
-      scrolling="no"
+      class="w-full aspect-video border-0"
+      src={calendarUrl}
       title="Schedule"
     ></iframe>
 
-    <!-- <h1>My Photo Album</h1>
-
-    <iframe
-      src={albumUrl}
-      width="100%"
-      height="800"
-      style="border:0;"
-      allowfullscreen
-      title="Album"
-    ></iframe> -->
-
     <style>
-      /* Keep the existing styles or add your own */
     </style>
   </div>
 </main>
