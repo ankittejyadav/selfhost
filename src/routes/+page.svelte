@@ -9,6 +9,9 @@
   const toggle = () => {
     color = color === "blue" ? "red" : "blue";
   };
+
+  /** @type {import('./$types').PageData} */
+  export let data;
 </script>
 
 <main>
@@ -28,6 +31,34 @@
       src={calendarUrl}
       title="Schedule"
     ></iframe>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-4">Recently Watched Videos</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {#each data.watchedVideos as video}
+          <a
+            href={video.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          >
+            <p class="font-semibold text-lg truncate" title={video.title}>
+              {video.title}
+            </p>
+            <p class="text-sm text-gray-600 mt-2">
+              Watched: {new Date(video.watchedAt).toLocaleString()}
+            </p>
+          </a>
+        {/each}
+
+        {#if data.watchedVideos.length === 0}
+          <p class="text-gray-500">
+            No videos logged yet. Go watch some YouTube!
+          </p>
+        {/if}
+      </div>
+    </section>
   </div>
 </main>
 
