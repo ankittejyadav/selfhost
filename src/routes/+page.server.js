@@ -1,18 +1,20 @@
-import fs from "fs";
-import path from "path";
+// In: src/routes/+page.server.js
 
-/**@type {import('./$types').PageServerLoad} */
-export function load() {
-  const dataPath = path.resolve("src/lib/data/videos.json");
+import { kv } from "$lib/server/kv"; // <-- THE ONLY CHANGE!
 
+/** @type {import('./$types').PageServerLoad} */
+export async function load() {
   try {
-    const data = fs.readFileSync(dataPath, "utf-8"); //read the file
-    const videos = JSON.parse(data);
+    // This logic is identical
+    const videos = await kv.lrange("videos", 0, 49);
+
     return {
-      watchedVideos: videos, //returns thsis data to the page
+      watchedVideos: videos,
     };
   } catch (error) {
-    console.error("Couldnt read videos.json file", error);
-    return { watchedVideos: [] }; //empty array so the page doesnt crash
+    console.error("Could not read videos from Upstash:", error);
+    return {
+      watchedVideos: [],
+    };
   }
 }

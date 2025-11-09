@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''"
@@ -13,6 +13,7 @@
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/kit": "^2.43.2",
 		"@sveltejs/vite-plugin-svelte": "^6.2.0",
+		"cross-env": "^10.1.0",
 		"svelte": "^5.39.5",
 		"vite": "^7.1.7"
 	},
@@ -20,7 +21,7 @@
 		"@auth/core": "^0.41.1",
 		"@auth/sveltekit": "^1.11.1",
 		"@tailwindcss/vite": "^4.1.16",
-		"@vercel/kv": "^3.0.0",
+		"@upstash/redis": "^1.35.6",
 		"dotenv": "^17.2.3",
 		"tailwindcss": "^4.1.16"
 	}
