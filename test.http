@@ -1,0 +1,25 @@
+### 1. Test SUCCESS (Happy Path)
+# This sends a valid POST request with a full JSON body.
+POST http://localhost:5173/api/yt-history
+Content-Type: application/json
+
+{
+  "title": "Test Video Title",
+  "url": "https://www.youtube.com/watch?v=TEST12345",
+  "watchedAt": "2025-11-09T16:30:00.000Z"
+}
+
+###
+### 2. Test FAILURE (Method Not Allowed)
+# This sends a GET request. Your API should reject this,
+# because it only accepts POST and OPTIONS. This is a GOOD test.
+GET http://localhost:5173/api/yt-history
+
+###
+### 3. Test FAILURE (Bad Data)
+# This sends a POST request but with an empty body.
+# Your code should catch this and send a 400 error.
+POST http://localhost:5173/api/yt-history
+Content-Type: application/json
+
+{}
