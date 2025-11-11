@@ -61,7 +61,7 @@ export async function GET() {
 
     // 2. Use the fresh token to get your 20 most recently played tracks
     const response = await fetch(
-      "api.spotify.com/v1/me/player/recently-played4",
+      "https://api.spotify.com/v1/me/player/recently-played",
       {
         headers: {
           Authorization: `Bearer ${token}`,
