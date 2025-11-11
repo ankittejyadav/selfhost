@@ -45,7 +45,8 @@ export async function GET({ url }) {
   });
 
   // 3. Make the request to Spotify's 'token' endpoint
-  const response = await fetch("http://googleusercontent.com/spotify.com/6", {
+  // We fetch from the real Spotify token URL
+  const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
       Authorization: authHeader,

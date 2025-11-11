@@ -27,7 +27,8 @@ export function GET() {
     show_dialog: "true", // This forces Spotify to ask for permission
   });
 
-  const loginUrl = `http://googleusercontent.com/spotify.com/5?${params.toString()}`;
+  // We use the real Spotify URL, not the Google proxy one
+  const loginUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
 
   // 5. Finally, we redirect the user to Spotify.
   // "307" is the HTTP code for a temporary redirect.
