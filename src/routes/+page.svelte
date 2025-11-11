@@ -82,6 +82,46 @@
         </div>
       </div>
     </div>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-4">Recently Played Podcasts</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {#each data.podcasts as podcast}
+          <a
+            href={podcast.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+          >
+            {#if podcast.thumbnail}
+              <img
+                src={podcast.thumbnail}
+                alt={podcast.title}
+                class="w-full h-48 object-cover"
+              />
+            {/if}
+
+            <div class="p-4">
+              <p class="font-semibold text-lg truncate" title={podcast.title}>
+                {podcast.title}
+              </p>
+              <p classs="text-sm text-gray-700 mt-1">{podcast.artist}</p>
+
+              <p class="text-sm text-gray-500 mt-2">
+                Listened: {new Date(podcast.listenedAt).toLocaleString()}
+              </p>
+            </div>
+          </a>
+        {/each}
+
+        {#if data.podcasts.length === 0}
+          <p class="text-gray-500">
+            No podcasts logged yet. Listen to a podcast on Spotify!
+          </p>
+        {/if}
+      </div>
+    </section>
   </div>
 </main>
 
