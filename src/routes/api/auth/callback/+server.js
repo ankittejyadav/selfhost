@@ -4,7 +4,7 @@ import { redirect } from "@sveltejs/kit";
 import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
-  PUBLIC_APP_URL,
+  APP_URL,
 } from "$env/static/private";
 import { kv } from "$lib/server/kv"; // We need our database connection
 
@@ -41,7 +41,7 @@ export async function GET({ url }) {
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: `${PUBLIC_APP_URL}/api/auth/callback`, // Must match exactly
+    redirect_uri: `${APP_URL}/api/auth/callback`, // Must match exactly
   });
 
   // 3. Make the request to Spotify's 'token' endpoint

@@ -4,10 +4,10 @@ import { redirect } from "@sveltejs/kit";
 
 // 1. We import our secret keys from $env.
 // This safely reads from your Vercel settings or your .env file.
-import { SPOTIFY_CLIENT_ID, PUBLIC_APP_URL } from "$env/static/private";
+import { SPOTIFY_CLIENT_ID, APP_URL } from "$env/static/private";
 
 // This is the *exact* URL you put in your Spotify dashboard.
-const redirect_uri = `${PUBLIC_APP_URL}/api/auth/callback`;
+const redirect_uri = `${APP_URL}/api/auth/callback`;
 
 // 2. These are the permissions we're asking for.
 // We just want to read your "recently played" history.
