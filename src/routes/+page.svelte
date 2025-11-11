@@ -69,6 +69,19 @@
         {/if}
       </div>
     </section>
+
+    <div class="max-w-7xl mx-auto p-8">
+      <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-4">
+          <a
+            href="/api/auth/login"
+            class="text-sm font-medium text-blue-600 hover:underline"
+          >
+            Login to Spotify
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 

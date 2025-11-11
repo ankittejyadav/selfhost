@@ -1,0 +1,35 @@
+// In: src/routes/api/auth/login/+server.js
+
+import { redirect } from "@sveltejs/kit";
+
+// 1. We import our secret keys from $env.
+// This safely reads from your Vercel settings or your .env file.
+import { SPOTIFY_CLIENT_ID, PUBLIC_APP_URL } from "$env/static/private";
+
+// This is the *exact* URL you put in your Spotify dashboard.
+const redirect_uri = `${PUBLIC_APP_URL}/api/auth/callback`;
+
+// 2. These are the permissions we're asking for.
+// We just want to read your "recently played" history.
+const scope = "user-read-recently-played";
+
+// 3. This GET function runs when anyone visits this page.
+/** @type {import('./$types').RequestHandler} */
+export function GET() {
+  // 4. We build the Spotify login URL.
+  // URLSearchParams is a standard web tool to build a query string
+  // (the part after the "?").
+  const params = new URLSearchParams({
+    response_type: "code",
+    client_id: SPOTIFY_CLIENT_ID,
+    scope: scope,
+    redirect_uri: redirect_uri,
+    show_dialog: "true", // This forces Spotify to ask for permission
+  });
+
+  const loginUrl = `http://googleusercontent.com/spotify.com/5?${params.toString()}`;
+
+  // 5. Finally, we redirect the user to Spotify.
+  // "307" is the HTTP code for a temporary redirect.
+  throw redirect(307, loginUrl);
+}
