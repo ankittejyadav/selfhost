@@ -2,6 +2,7 @@
 
 import { json } from "@sveltejs/kit";
 import { kv } from "$lib/server/kv"; // <-- THE ONLY CHANGE!
+import { URL } from "url";
 
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request }) {
@@ -10,6 +11,21 @@ export async function POST({ request }) {
   if (!newVideo.url) {
     return json({ error: "Missing URL" }, { status: 400 });
   }
+
+  // --- 2. ADD THIS NEW LOGIC ---
+  try {
+    // This line parses the full URL and finds the 'v' parameter
+    const videoId = new URL(newVideo.url).searchParams.get("v");
+
+    if (videoId) {
+      // This is the standard format for all YouTube thumbnails
+      newVideo.thumbnail = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+    }
+  } catch (e) {
+    console.error("Could not parse URL:", e);
+    newVideo.thumbnail = null; // Save 'null' if we fail
+  }
+  // --- END OF NEW LOGIC ---
 
   // This logic is identical to before
   const allVideos = await kv.lrange("videos", 0, -1);

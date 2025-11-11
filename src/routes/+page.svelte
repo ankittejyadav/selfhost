@@ -41,14 +41,24 @@
             href={video.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="block p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+            class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
           >
-            <p class="font-semibold text-lg truncate" title={video.title}>
-              {video.title}
-            </p>
-            <p class="text-sm text-gray-600 mt-2">
-              Watched: {new Date(video.watchedAt).toLocaleString()}
-            </p>
+            {#if video.thumbnail}
+              <img
+                src={video.thumbnail}
+                alt={video.title}
+                class="w-full h-48 object-cover"
+              />
+            {/if}
+
+            <div class="p-4">
+              <p class="font-semibold text-lg truncate" title={video.title}>
+                {video.title}
+              </p>
+              <p class="text-sm text-gray-600 mt-2">
+                Watched: {new Date(video.watchedAt).toLocaleString()}
+              </p>
+            </div>
           </a>
         {/each}
 
