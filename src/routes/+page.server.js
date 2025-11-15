@@ -23,7 +23,6 @@ async function getSpotifyData() {
   }
 
   // 1. Get a new access token
-  // FIXED: Correct Spotify token endpoint URL
   const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -46,7 +45,6 @@ async function getSpotifyData() {
   const token = tokenData.access_token;
 
   // 2. Use the new token to get played tracks
-  // FIXED: Correct Spotify API endpoint URL
   const tracksResponse = await fetch(
     "https://api.spotify.com/v1/me/player/recently-played",
     {
@@ -61,9 +59,15 @@ async function getSpotifyData() {
   const data = await tracksResponse.json();
 
   // 3. Format and save the data (this filters for podcasts AND music)
+  // Debug: Log what types we found
+  console.log(
+    "Raw Spotify data:",
+    JSON.stringify(data.items.slice(0, 2), null, 2)
+  );
+
   // Process podcasts
   const newPodcasts = data.items
-    .filter((item) => item.track.type === "episode") // Podcasts only
+    .filter((item) => item.track.type === "episode")
     .map((item) => ({
       title: item.track.name,
       artist: item.track.show?.name || "Unknown Show",
@@ -75,7 +79,7 @@ async function getSpotifyData() {
 
   // 4. Also get regular music tracks
   const newTracks = data.items
-    .filter((item) => item.track.type === "track") // Music only
+    .filter((item) => item.track.type === "track")
     .map((item) => ({
       title: item.track.name,
       artist:
@@ -86,17 +90,31 @@ async function getSpotifyData() {
     }));
 
   // Save podcasts (keep only 10 most recent)
+  // We reverse the array because lpush adds items in reverse order
   if (newPodcasts.length > 0) {
     await kv.del("podcasts");
-    await kv.lpush("podcasts", ...newPodcasts);
-    await kv.ltrim("podcasts", 0, 9); // Keep only 10
+    await kv.lpush("podcasts", ...newPodcasts.reverse());
+    await kv.ltrim("podcasts", 0, 9);
   }
 
   // Save music tracks (keep only 10 most recent)
+  // We reverse the array because lpush adds items in reverse order
   if (newTracks.length > 0) {
     await kv.del("music");
-    await kv.lpush("music", ...newTracks);
-    await kv.ltrim("music", 0, 9); // Keep only 10
+    await kv.lpush("music", ...newTracks.reverse());
+    await kv.ltrim("music", 0, 9);
+  }
+
+  // Debug: Log what we saved
+  console.log("Found podcasts:", newPodcasts.length);
+  console.log("Found tracks:", newTracks.length);
+  if (newPodcasts.length > 0) {
+    console.log(
+      "Sample podcast:",
+      newPodcasts[0].title,
+      "from",
+      newPodcasts[0].artist
+    );
   }
 }
 
@@ -111,9 +129,9 @@ export async function load() {
   // Now we read all data from the DB
   try {
     const [videos, podcasts, music, status] = await Promise.all([
-      kv.lrange("videos", 0, 9), // Only get 10 most recent
-      kv.lrange("podcasts", 0, 9), // Only get 10 most recent
-      kv.lrange("music", 0, 9), // Only get 10 most recent
+      kv.lrange("videos", 0, 9),
+      kv.lrange("podcasts", 0, 9),
+      kv.lrange("music", 0, 9),
       kv.get("youtube_status"),
     ]);
 
