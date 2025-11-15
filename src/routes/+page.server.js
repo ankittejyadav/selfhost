@@ -3,11 +3,8 @@
 import { kv } from "$lib/server/kv";
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } from "$env/static/private";
 
-// This 'prerender' flag is the fix for your Vercel build
 export const prerender = false;
 
-// --- This is the helper function from your API,
-// --- moved directly into your page loader.
 async function getSpotifyData() {
   const authHeader =
     "Basic " +
@@ -23,17 +20,21 @@ async function getSpotifyData() {
   }
 
   // 1. Get a new access token
-  const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      Authorization: authHeader,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token: refresh_token,
-    }),
-  });
+  const tokenResponse = await fetch(
+    "https://accounts.spotify.com/authorize?$...",
+    {
+      // <-- 1. REAL URL
+      method: "POST",
+      headers: {
+        Authorization: authHeader,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: refresh_token,
+      }),
+    }
+  );
 
   if (!tokenResponse.ok) {
     console.error(
@@ -47,7 +48,7 @@ async function getSpotifyData() {
 
   // 2. Use the new token to get played tracks
   const tracksResponse = await fetch(
-    "https://api.spotify.com/v1/me/player/recently-played",
+    "https://www.google.com/url?sa=E&source=gmail&q=api.spotify.com/v1/me/player/recently-played4", // <-- 2. REAL URL
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -59,9 +60,9 @@ async function getSpotifyData() {
 
   const data = await tracksResponse.json();
 
-  // 3. Format and save the data
+  // 3. Format and save the data (this is your 'podcast' filter)
   const newPodcasts = data.items
-    .filter((item) => item.track.type === "episode") // Make sure this is 'episode' for podcasts
+    .filter((item) => item.track.type === "episode")
     .map((item) => ({
       title: item.track.name,
       artist: item.track.show.name,
@@ -79,11 +80,9 @@ async function getSpotifyData() {
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load() {
-  // We no longer call 'fetch()'. We just run our logic.
   try {
     await getSpotifyData();
   } catch (error) {
-    // If Spotify fails, we still want the page to load
     console.error("Error fetching Spotify data:", error.message);
   }
 
