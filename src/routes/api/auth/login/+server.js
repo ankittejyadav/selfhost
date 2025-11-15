@@ -13,24 +13,20 @@ const redirect_uri = `${APP_URL}/api/auth/callback`;
 // We just want to read your "recently played" history.
 const scope = "user-read-recently-played";
 
-// 3. This GET function runs when anyone visits this page.
+// This GET function runs when anyone visits this page.
 /** @type {import('./$types').RequestHandler} */
 export function GET() {
-  // 4. We build the Spotify login URL.
-  // URLSearchParams is a standard web tool to build a query string
-  // (the part after the "?").
   const params = new URLSearchParams({
     response_type: "code",
     client_id: SPOTIFY_CLIENT_ID,
     scope: scope,
     redirect_uri: redirect_uri,
-    show_dialog: "true", // This forces Spotify to ask for permission
+    show_dialog: "true",
   });
 
-  // We use the real Spotify URL, not the Google proxy one
-  const loginUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
+  // --- THIS IS THE FIX ---
+  const loginUrl = `https://accounts.spotify.com/authorize?$...{params.toString()}`;
+  // --- END OF FIX ---
 
-  // 5. Finally, we redirect the user to Spotify.
-  // "307" is the HTTP code for a temporary redirect.
   throw redirect(307, loginUrl);
 }

@@ -45,12 +45,11 @@ async function getSpotifyData() {
     throw new Error("Could not refresh Spotify token.");
   }
 
-  // This should now work
   const tokenData = await tokenResponse.json();
   const token = tokenData.access_token;
 
   // 2. Use the new token to get played tracks
-  // --- THIS IS THE FIX (REAL URL) ---
+  // --- FIX #2 ---
   const tracksResponse = await fetch(
     "https://www.google.com/url?sa=E&source=gmail&q=api.spotify.com/v1/me/player/recently-played4",
     {

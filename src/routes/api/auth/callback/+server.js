@@ -44,9 +44,10 @@ export async function GET({ url }) {
     redirect_uri: `${APP_URL}/api/auth/callback`, // Must match exactly
   });
 
-  // 3. Make the request to Spotify's 'token' endpoint
-  // We fetch from the real Spotify token URL
+  // 3. Make the secure, server-to-server request
+  // --- THIS IS THE FIX ---
   const response = await fetch("https://accounts.spotify.com/api/token", {
+    // --- END OF FIX ---
     method: "POST",
     headers: {
       Authorization: authHeader,
