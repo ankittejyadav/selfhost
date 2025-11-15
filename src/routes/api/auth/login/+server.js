@@ -24,9 +24,8 @@ export function GET() {
     show_dialog: "true",
   });
 
-  // --- THIS IS THE FIX ---
-  const loginUrl = `https://accounts.spotify.com/authorize?$...{params.toString()}`;
-  // --- END OF FIX ---
+  // FIXED: Correct Spotify authorization URL
+  const loginUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
 
   throw redirect(307, loginUrl);
 }

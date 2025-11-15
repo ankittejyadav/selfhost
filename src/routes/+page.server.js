@@ -23,21 +23,18 @@ async function getSpotifyData() {
   }
 
   // 1. Get a new access token
-  // --- THIS IS THE FIX (REAL URL) ---
-  const tokenResponse = await fetch(
-    "https://accounts.spotify.com/authorize?$...",
-    {
-      method: "POST",
-      headers: {
-        Authorization: authHeader,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: refresh_token,
-      }),
-    }
-  );
+  // FIXED: Correct Spotify token endpoint URL
+  const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization: authHeader,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refresh_token,
+    }),
+  });
 
   if (!tokenResponse.ok) {
     const errorText = await tokenResponse.text();
@@ -49,9 +46,9 @@ async function getSpotifyData() {
   const token = tokenData.access_token;
 
   // 2. Use the new token to get played tracks
-  // --- FIX #2 ---
+  // FIXED: Correct Spotify API endpoint URL
   const tracksResponse = await fetch(
-    "https://www.google.com/url?sa=E&source=gmail&q=api.spotify.com/v1/me/player/recently-played4",
+    "https://api.spotify.com/v1/me/player/recently-played",
     {
       headers: { Authorization: `Bearer ${token}` },
     }
@@ -63,21 +60,43 @@ async function getSpotifyData() {
 
   const data = await tracksResponse.json();
 
-  // 3. Format and save the data (this is your 'podcast' filter)
+  // 3. Format and save the data (this filters for podcasts AND music)
+  // Process podcasts
   const newPodcasts = data.items
-    .filter((item) => item.track.type === "episode")
+    .filter((item) => item.track.type === "episode") // Podcasts only
     .map((item) => ({
       title: item.track.name,
-      artist: item.track.show.name,
-      url: item.track.external_urls.spotify,
-      thumbnail: item.track.images[0]?.url,
+      artist: item.track.show?.name || "Unknown Show",
+      url: item.track.external_urls?.spotify || "",
+      thumbnail:
+        item.track.images?.[0]?.url || item.track.show?.images?.[0]?.url,
       listenedAt: item.played_at,
     }));
 
+  // 4. Also get regular music tracks
+  const newTracks = data.items
+    .filter((item) => item.track.type === "track") // Music only
+    .map((item) => ({
+      title: item.track.name,
+      artist:
+        item.track.artists?.map((a) => a.name).join(", ") || "Unknown Artist",
+      url: item.track.external_urls?.spotify || "",
+      thumbnail: item.track.album?.images?.[0]?.url,
+      listenedAt: item.played_at,
+    }));
+
+  // Save podcasts (keep only 10 most recent)
   if (newPodcasts.length > 0) {
     await kv.del("podcasts");
     await kv.lpush("podcasts", ...newPodcasts);
-    await kv.ltrim("podcasts", 0, 49);
+    await kv.ltrim("podcasts", 0, 9); // Keep only 10
+  }
+
+  // Save music tracks (keep only 10 most recent)
+  if (newTracks.length > 0) {
+    await kv.del("music");
+    await kv.lpush("music", ...newTracks);
+    await kv.ltrim("music", 0, 9); // Keep only 10
   }
 }
 
@@ -89,17 +108,19 @@ export async function load() {
     console.error("Error fetching Spotify data:", error.message);
   }
 
-  // Now we read all data from the DB just like before
+  // Now we read all data from the DB
   try {
-    const [videos, podcasts, status] = await Promise.all([
-      kv.lrange("videos", 0, 49),
-      kv.lrange("podcasts", 0, 49),
+    const [videos, podcasts, music, status] = await Promise.all([
+      kv.lrange("videos", 0, 9), // Only get 10 most recent
+      kv.lrange("podcasts", 0, 9), // Only get 10 most recent
+      kv.lrange("music", 0, 9), // Only get 10 most recent
       kv.get("youtube_status"),
     ]);
 
     return {
-      watchedVideos: videos,
-      podcasts: podcasts,
+      watchedVideos: videos || [],
+      podcasts: podcasts || [],
+      music: music || [],
       youtubeStatus: status === "active" ? "active" : "offline",
     };
   } catch (error) {
@@ -107,6 +128,7 @@ export async function load() {
     return {
       watchedVideos: [],
       podcasts: [],
+      music: [],
       youtubeStatus: "offline",
     };
   }

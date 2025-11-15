@@ -106,7 +106,8 @@
               <p class="font-semibold text-lg truncate" title={podcast.title}>
                 {podcast.title}
               </p>
-              <p classs="text-sm text-gray-700 mt-1">{podcast.artist}</p>
+              <!-- FIXED: Changed 'classs' to 'class' -->
+              <p class="text-sm text-gray-700 mt-1">{podcast.artist}</p>
 
               <p class="text-sm text-gray-500 mt-2">
                 Listened: {new Date(podcast.listenedAt).toLocaleString()}
@@ -118,6 +119,46 @@
         {#if data.podcasts.length === 0}
           <p class="text-gray-500">
             No podcasts logged yet. Listen to a podcast on Spotify!
+          </p>
+        {/if}
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-bold mb-4">Recently Played Music</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {#each data.music as track}
+          <a
+            href={track.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden"
+          >
+            {#if track.thumbnail}
+              <img
+                src={track.thumbnail}
+                alt={track.title}
+                class="w-full h-48 object-cover"
+              />
+            {/if}
+
+            <div class="p-4">
+              <p class="font-semibold text-lg truncate" title={track.title}>
+                {track.title}
+              </p>
+              <p class="text-sm text-gray-700 mt-1">{track.artist}</p>
+
+              <p class="text-sm text-gray-500 mt-2">
+                Listened: {new Date(track.listenedAt).toLocaleString()}
+              </p>
+            </div>
+          </a>
+        {/each}
+
+        {#if data.music.length === 0}
+          <p class="text-gray-500">
+            No music logged yet. Listen to some music on Spotify!
           </p>
         {/if}
       </div>
