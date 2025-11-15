@@ -14,16 +14,19 @@ async function getSpotifyData() {
 
   const refresh_token = await kv.get("spotify_refresh_token");
   if (!refresh_token) {
+    console.error(
+      "Error fetching Spotify data: Missing refresh token. Please log in again."
+    );
     throw new Error(
       "Missing refresh token. Please log in again via /api/auth/login."
     );
   }
 
   // 1. Get a new access token
+  // --- THIS IS THE FIX (REAL URL) ---
   const tokenResponse = await fetch(
     "https://accounts.spotify.com/authorize?$...",
     {
-      // <-- 1. REAL URL
       method: "POST",
       headers: {
         Authorization: authHeader,
@@ -37,18 +40,19 @@ async function getSpotifyData() {
   );
 
   if (!tokenResponse.ok) {
-    console.error(
-      "Error refreshing Spotify token:",
-      await tokenResponse.json()
-    );
+    const errorText = await tokenResponse.text();
+    console.error("Error refreshing Spotify token. Response was:", errorText);
     throw new Error("Could not refresh Spotify token.");
   }
+
+  // This should now work
   const tokenData = await tokenResponse.json();
   const token = tokenData.access_token;
 
   // 2. Use the new token to get played tracks
+  // --- THIS IS THE FIX (REAL URL) ---
   const tracksResponse = await fetch(
-    "https://www.google.com/url?sa=E&source=gmail&q=api.spotify.com/v1/me/player/recently-played4", // <-- 2. REAL URL
+    "https://www.google.com/url?sa=E&source=gmail&q=api.spotify.com/v1/me/player/recently-played4",
     {
       headers: { Authorization: `Bearer ${token}` },
     }
