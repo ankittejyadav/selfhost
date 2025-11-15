@@ -46,7 +46,7 @@ async function getSpotifyData() {
 
   // 2. Use the new token to get played tracks
   const tracksResponse = await fetch(
-    "https://api.spotify.com/v1/me/player/recently-played",
+    "https://api.spotify.com/v1/me/player/recently-played?limit=50",
     {
       headers: { Authorization: `Bearer ${token}` },
     }
